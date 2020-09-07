@@ -167,12 +167,19 @@ class DPISwitcher(inkex.EffectExtension):
         # widthInInches = self.convert_length(origWidth, 'in')
         # heightInInches = self.convert_length(origHeight, 'in')
 
-        widthInPx = self.convert_length(origWidth, 'px')
-        heightInPx = self.convert_length(origHeight, 'px')
+        # widthInPx = self.convert_length(origWidth, 'px')
+        # heightInPx = self.convert_length(origHeight, 'px')
+        widthInPx = convert_unit(svg.get('width'), 'px')
+        heightInPx = convert_unit(svg.get('height'), 'px')
 
-        widthInInches = svg.uutounit(origWidth, 'in')
-        heightInInches = svg.uutounit(origHeight, 'in')
+        # widthInInches = svg.uutounit(origWidth, 'in')
+        # heightInInches = svg.uutounit(origHeight, 'in')
 
+        widthInInches = convert_unit(svg.get('width'), 'in')
+        heightInInches = convert_unit(svg.get('height'), 'in')
+
+        # print(f'{widthInInches} {heightInInches}')
+        # exit()
         # self.units = 'in'
         # newWidthInPx = self.convert_length(14, 'px')
 
@@ -192,8 +199,8 @@ class DPISwitcher(inkex.EffectExtension):
         thing2 = discover_unit(svg.get('width'), viewbox[2], default='px')
 
         sys.stderr.write("we in here " + str(origWidth) + " " + str(widthInInches) + " " + svg.get('width') + " " + thing2 + " \n")
-        print(svg.unit + "\n" + str(parse_unit(svg.get('width'))))
-        exit()
+        # print(svg.unit + "\n" + str(parse_unit(svg.get('width'))))
+        # exit()
         if svg.get('viewBox') == None:
             svg.set('viewBox', "0 0 " + str(origWidth) + " " + str(origHeight))
 
@@ -242,7 +249,7 @@ class DPISwitcher(inkex.EffectExtension):
 
 
         # newWidthInPx = self.convert_length(targetWidthInches, 'px')
-        newWidthInPx = self.convert_to_length_in_px(14, 'in')
+        newWidthInPx = self.convert_to_length_in_px(targetWidthInches, 'in')
         # newWidthInPx = targetWidthInches * self.__uuconv['in']
         # newHeightInPx = svg.uutounit(origHeight, 'px')
 
@@ -255,16 +262,17 @@ class DPISwitcher(inkex.EffectExtension):
         # newWidthInPx = targetWidthInches * self.__uuconv['in']
         # newHeightInPx = svg.uutounit(origHeight, 'px')
 
-        diff = newWidthInPx - origWidth
+        diff = newWidthInPx - widthInPx
         translateCalc = diff / 2
 
-        sys.stderr.write("Did we ever make it in here?\n" + str(origWidth) + " " + str(svg.uutounit(origHeight, 'px')) + " " + str(newWidthInPx) + " " + str(diff) + " " + str(translateCalc) + "\n " + str(targetWidthInches) + " " + str(newWidthInPx))
+        sys.stderr.write("Did we ever make it in here?\n" + str(origWidth) + " " + str(svg.uutounit(origHeight, 'px')) + " " + str(newWidthInPx) + " diff is : " + str(diff) + " " + str(translateCalc) + "\n " + str(targetWidthInches) + " " + str(newWidthInPx))
 
-        for element in svg:
-            tag = element.TAG
+        if diff != 0:
+            for element in svg:
+                tag = element.TAG
 
-            if tag in GRAPHICS_ELEMENTS or tag in CONTAINER_ELEMENTS:
-                element.set('transform', 'translate(' + str(translateCalc) + ')')
+                if tag in GRAPHICS_ELEMENTS or tag in CONTAINER_ELEMENTS:
+                    element.set('transform', 'translate(' + str(translateCalc) + ')')
 
         #     sys.stderr.write(str(element.TAG) + " and then " + str(element.attrib) + "\n\n\n")
 

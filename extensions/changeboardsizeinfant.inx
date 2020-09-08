@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<inkscape-extension xmlns="http://www.inkscape.org/namespace/inkscape/extension">
+      <name>Board Size Infant</name>
+      <id>org.inkscape.infantboardsize</id>
+      <param name="size_select" value="infant" type="string" gui-hidden="true">infant</param>
+      <effect needs-live-preview="false">
+        <object-type>all</object-type>
+        <effects-menu>
+          <submenu name="Document"/>
+        </effects-menu>
+      </effect>
+      <script>
+        <command location="inx" interpreter="python">changeboardsize.py</command>
+      </script>
+</inkscape-extension>

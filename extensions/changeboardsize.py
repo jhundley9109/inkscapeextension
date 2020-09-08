@@ -34,7 +34,8 @@ from lxml import etree
 # from inkex import load_svg
 
 
-from units import discover_unit, convert_unit, render_unit, parse_unit
+# from units import discover_unit, convert_unit, render_unit, parse_unit
+from inkex.units import discover_unit, convert_unit, render_unit, parse_unit
 
 GRAPHICS_ELEMENTS = [
     'circle',
@@ -56,11 +57,6 @@ CONTAINER_ELEMENTS = [
 ]
 
 class DPISwitcher(inkex.EffectExtension):
-    multi_inx = True
-    factor_a = 90.0 / 96.0
-    factor_b = 96.0 / 90.0
-    units = "px"
-    # sys.stderr.write("hello from the other size")
 
     def add_arguments(self, pars):
         # sys.stderr.write("Did we ever make it in here?\n")
@@ -68,18 +64,6 @@ class DPISwitcher(inkex.EffectExtension):
                           help="Select the target board size")
 
     # dictionaries of unit to user unit conversion factors
-    __uuconvLegacy = {
-        'in': 90.0,
-        'pt': 1.25,
-        'px': 1.0,
-        'mm': 3.5433070866,
-        'cm': 35.433070866,
-        'm': 3543.3070866,
-        'km': 3543307.0866,
-        'pc': 15.0,
-        'yd': 3240.0,
-        'ft': 1080.0,
-    }
     __uuconv = {
         'in': 96.0,
         'pt': 1.33333333333,
@@ -92,6 +76,26 @@ class DPISwitcher(inkex.EffectExtension):
         'yd': 3456.0,
         'ft': 1152.0,
     }
+
+    def remove_all_existing_guides(self):
+        for guide in self.svg.namedview.get_guides():
+            guide.delete()
+
+    def set_guide_at_position(self, guideLocation, isHorizontal=False):
+        svg = self.svg
+        newViewbox = svg.get_viewbox()
+
+        if isHorizontal:
+            targetDimension = self.parse_length(svg.get('height'))[0]
+            viewBoxDimension = newViewbox[3]
+        else:
+            targetDimension = self.parse_length(svg.get('width'))[0]
+            viewBoxDimension = newViewbox[2]
+
+        factor = (1 / targetDimension) * (targetDimension - guideLocation)
+        guidePosition = viewBoxDimension * factor
+
+        svg.namedview.new_guide(guidePosition, isHorizontal)
 
     def parse_length(self, length, percent=False):
         """Parse SVG length."""
@@ -120,8 +124,6 @@ class DPISwitcher(inkex.EffectExtension):
         heightInfo = self.parse_length(svg.get('height'))
         origHeight = heightInfo[0]
 
-        # self.units = widthInfo[1]
-
         widthInPx = convert_unit(svg.get('width'), 'px')
         heightInPx = convert_unit(svg.get('height'), 'px')
 
@@ -134,57 +136,39 @@ class DPISwitcher(inkex.EffectExtension):
         elif self.options.size_select == "adult":
             targetWidthInches = 14
             targetHeightInches = 16
+        elif self.options.size_select == "infant":
+            targetWidthInches = 7
+            targetHeightInches = 9
+        elif self.options.size_select == "exlarge":
+            targetWidthInches = 16
+            targetHeightInches = 18
 
         # viewbox = svg.get_viewbox()
         # thing2 = discover_unit(svg.get('width'), viewbox[2], default='px')
 
-        # sys.stderr.write("we in here " + str(origWidth) + " " + str(widthInInches) + " " + svg.get('width') + " " + thing2 + " \n")
-        # print(svg.unit + "\n" + str(parse_unit(svg.get('width'))))
-        # exit()
-        # print(str(viewbox))
-        # exit()
         if svg.get('viewBox') == None:
             svg.set('viewBox', "0 0 " + str(origWidth) + " " + str(origHeight))
 
         origViewbox = svg.get_viewbox()
 
-        # origWidth = float(re.findall(r'\d+', svg.get('width'))[0])
-        # origHeight = float(re.findall(r'\d+', svg.get('height'))[0])
-
-        # sys.stderr.write(str(origViewbox) + " " + str(widthInInches) + " " + str(heightInInches) + " " + str(targetWidthInches) + " " + str(targetHeightInches) + "\n")
-        # exit()
-
         svg.set('viewBox', '{} {} {} {}'.format(origViewbox[0], origViewbox[1], (targetWidthInches / widthInInches) * float(origViewbox[2]), (targetHeightInches / heightInInches) * float(origViewbox[3])))
-        # print(str(svg.get_viewbox()))
-        # exit()
 
         svg.namedview.set('units', "in")
         svg.namedview.set('inkscape:document-units', "in")
         svg.set('width', str(targetWidthInches) + "in")
         svg.set('height', str(targetHeightInches) + "in")
 
+        svg.namedview.set('pagecolor', "#abd7de")
         svg.namedview.set('inkscape:pagecheckerboard', "true")
         svg.namedview.set('inkscape:window-maximized', "1")
 
-
-
-     #    <sodipodi:guide
-     # id="guide45"
-     # orientation="0,-1"
-     # position="820.73159,1428.0879" />
-
-        # svg.namedview.add()
-
-        self.svg.namedview.new_guide('11.984409,380.89807', True)
-
-        # randomId = svg.get_unique_id('guide')
-
-        # svg.namedview.guide.set('orientation', '0,-1')
-        # svg.namedview.guide.set('position', '820.73159,1428.0879')
-
-
-
-
+        # Set the guides at 1, 2, 3 inches and half board horizontally, and half board vertically
+        self.remove_all_existing_guides()
+        self.set_guide_at_position(1, True)
+        self.set_guide_at_position(2, True)
+        self.set_guide_at_position(3, True)
+        self.set_guide_at_position(targetHeightInches / 2, True)
+        self.set_guide_at_position(targetWidthInches / 2, False)
 
         newWidthInPx = convert_unit(str(targetWidthInches) + 'in', 'px')
 
@@ -193,21 +177,14 @@ class DPISwitcher(inkex.EffectExtension):
 
         # sys.stderr.write("Did we ever make it in here?\n" + str(origWidth) + " " + str(svg.uutounit(origHeight, 'px')) + " " + str(newWidthInPx) + " diff is : " + str(diff) + " " + str(translateCalc) + "\n " + str(targetWidthInches) + " " + str(newWidthInPx))
 
-        # if diff != 0:
         for element in svg:
             tag = element.TAG
 
             if tag in GRAPHICS_ELEMENTS or tag in CONTAINER_ELEMENTS:
                 # sys.stderr.write(str(element.get('transform')) + " " + str(translateCalc))
                 # existtingTransform = element.get('transform')
-                # translate(-23.484314)
-                # BoundingBox((210.76364, 705.59998),(210.23709, 649.41565))
-                # BoundingBox((211.77038999999996, 795.1982400000002),(49.66091500000003, 675.1883799999998))
 
-                svg.set_selected(element)
-                sys.stderr.write(str(svg.get_selected_bbox()))
-
-                element.set('transform', 'translate(' + str(translateCalc) + ')')
+                element.transform.add_translate(translateCalc, 0)
 
 if __name__ == '__main__':
     DPISwitcher().run()

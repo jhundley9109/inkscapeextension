@@ -119,6 +119,11 @@ class DPISwitcher(inkex.EffectExtension):
     def effect(self):
         svg = self.svg
 
+        if svg.get('width') == None:
+            viewbox = svg.get_viewbox()
+            svg.set('width', str(viewbox[2]))
+            svg.set('height', str(viewbox[3]))
+
         widthInfo = self.parse_length(svg.get('width'))
         origWidth = widthInfo[0]
         heightInfo = self.parse_length(svg.get('height'))

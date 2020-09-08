@@ -166,6 +166,26 @@ class DPISwitcher(inkex.EffectExtension):
         svg.namedview.set('inkscape:pagecheckerboard', "true")
         svg.namedview.set('inkscape:window-maximized', "1")
 
+
+
+     #    <sodipodi:guide
+     # id="guide45"
+     # orientation="0,-1"
+     # position="820.73159,1428.0879" />
+
+        # svg.namedview.add()
+
+        self.svg.namedview.new_guide('11.984409,380.89807', True)
+
+        # randomId = svg.get_unique_id('guide')
+
+        # svg.namedview.guide.set('orientation', '0,-1')
+        # svg.namedview.guide.set('position', '820.73159,1428.0879')
+
+
+
+
+
         newWidthInPx = convert_unit(str(targetWidthInches) + 'in', 'px')
 
         diff = newWidthInPx - widthInPx
@@ -173,15 +193,21 @@ class DPISwitcher(inkex.EffectExtension):
 
         # sys.stderr.write("Did we ever make it in here?\n" + str(origWidth) + " " + str(svg.uutounit(origHeight, 'px')) + " " + str(newWidthInPx) + " diff is : " + str(diff) + " " + str(translateCalc) + "\n " + str(targetWidthInches) + " " + str(newWidthInPx))
 
-        if diff != 0:
-            for element in svg:
-                tag = element.TAG
+        # if diff != 0:
+        for element in svg:
+            tag = element.TAG
 
-                if tag in GRAPHICS_ELEMENTS or tag in CONTAINER_ELEMENTS:
-                    sys.stderr.write(str(element.get('transform')) + " " + str(translateCalc))
-                    existtingTransform = element.get('transform')
+            if tag in GRAPHICS_ELEMENTS or tag in CONTAINER_ELEMENTS:
+                # sys.stderr.write(str(element.get('transform')) + " " + str(translateCalc))
+                # existtingTransform = element.get('transform')
+                # translate(-23.484314)
+                # BoundingBox((210.76364, 705.59998),(210.23709, 649.41565))
+                # BoundingBox((211.77038999999996, 795.1982400000002),(49.66091500000003, 675.1883799999998))
 
-                    element.set('transform', 'translate(' + str(translateCalc) + ')')
+                svg.set_selected(element)
+                sys.stderr.write(str(svg.get_selected_bbox()))
+
+                element.set('transform', 'translate(' + str(translateCalc) + ')')
 
 if __name__ == '__main__':
     DPISwitcher().run()

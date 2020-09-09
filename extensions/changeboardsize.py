@@ -60,7 +60,7 @@ class DPISwitcher(inkex.EffectExtension):
 
     def add_arguments(self, pars):
         # sys.stderr.write("Did we ever make it in here?\n")
-        pars.add_argument("--size_select", type=str, default=False,
+        pars.add_argument("--size_select", type=str, default='',
                           help="Select the target board size")
 
         pars.add_argument("--toggle_unit_to_inches", type=bool, default=False,
@@ -138,7 +138,7 @@ class DPISwitcher(inkex.EffectExtension):
         widthInInches = convert_unit(svg.get('width'), 'in')
         heightInInches = convert_unit(svg.get('height'), 'in')
 
-        if self.options.toggle_unit_to_inches:
+        if self.options.toggle_unit_to_inches or self.options.size_select == '':
             targetWidthInches = widthInInches
             targetHeightInches = heightInInches
         else:
@@ -174,7 +174,7 @@ class DPISwitcher(inkex.EffectExtension):
         # svg.namedview.set('inkscape:cy', '114.95549')
         # svg.namedview.set('inkscape:zoom', '0.5')
 
-        if self.options.toggle_unit_to_inches:
+        if self.options.toggle_unit_to_inches or self.options.size_select == '':
             return None
 
         svg.namedview.set('pagecolor', "#abd7de")

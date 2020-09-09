@@ -60,8 +60,11 @@ class DPISwitcher(inkex.EffectExtension):
 
     def add_arguments(self, pars):
         # sys.stderr.write("Did we ever make it in here?\n")
-        pars.add_argument("--size_select", type=str,
+        pars.add_argument("--size_select", type=str, default=False,
                           help="Select the target board size")
+
+        pars.add_argument("--toggle_unit_to_inches", type=bool, default=False,
+                          help="Switch between inches and pixels as the document units")
 
     # dictionaries of unit to user unit conversion factors
     __uuconv = {
@@ -135,18 +138,22 @@ class DPISwitcher(inkex.EffectExtension):
         widthInInches = convert_unit(svg.get('width'), 'in')
         heightInInches = convert_unit(svg.get('height'), 'in')
 
-        if self.options.size_select == "youth":
-            targetWidthInches = 10
-            targetHeightInches = 12
-        elif self.options.size_select == "adult":
-            targetWidthInches = 14
-            targetHeightInches = 16
-        elif self.options.size_select == "infant":
-            targetWidthInches = 7
-            targetHeightInches = 9
-        elif self.options.size_select == "exlarge":
-            targetWidthInches = 16
-            targetHeightInches = 18
+        if self.options.toggle_unit_to_inches:
+            targetWidthInches = widthInInches
+            targetHeightInches = heightInInches
+        else:
+            if self.options.size_select == "youth":
+                targetWidthInches = 10
+                targetHeightInches = 12
+            elif self.options.size_select == "adult":
+                targetWidthInches = 14
+                targetHeightInches = 16
+            elif self.options.size_select == "infant":
+                targetWidthInches = 7
+                targetHeightInches = 9
+            elif self.options.size_select == "exlarge":
+                targetWidthInches = 16
+                targetHeightInches = 18
 
         # viewbox = svg.get_viewbox()
         # thing2 = discover_unit(svg.get('width'), viewbox[2], default='px')
@@ -162,6 +169,13 @@ class DPISwitcher(inkex.EffectExtension):
         svg.namedview.set('inkscape:document-units', "in")
         svg.set('width', str(targetWidthInches) + "in")
         svg.set('height', str(targetHeightInches) + "in")
+
+        # svg.namedview.set('inkscape:cx', '218.85925')
+        # svg.namedview.set('inkscape:cy', '114.95549')
+        # svg.namedview.set('inkscape:zoom', '0.5')
+
+        if self.options.toggle_unit_to_inches:
+            return None
 
         svg.namedview.set('pagecolor', "#abd7de")
         svg.namedview.set('inkscape:pagecheckerboard', "true")

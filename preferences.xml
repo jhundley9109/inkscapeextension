@@ -133,15 +133,15 @@
          id="rect"
          style="fill:blue;"
          usecurrent="1"
-         width="929230"
-         height="650490"
+         width="156.788"
+         height="196.555"
          rx="0"
          ry="0" />
       <eventcontext
          id="3dbox"
          style="stroke:none;stroke-linejoin:round;"
          usecurrent="1"
-         persp="perspective9">
+         persp="perspective1128">
         <side
            id="XYfront"
            style="fill:#8686bf;stroke:none;stroke-linejoin:round;"
@@ -173,8 +173,8 @@
          end="0"
          start="0"
          usecurrent="1"
-         rx="823236"
-         ry="823236" />
+         rx="1e+06"
+         ry="1e+06" />
       <eventcontext
          id="star"
          magnitude="5"
@@ -341,8 +341,8 @@
        style="fill:black;fill-opacity:1;stroke:none;font-family:sans-serif;font-style:normal;font-weight:normal;font-size:40px;line-height:125%;letter-spacing:0px;word-spacing:0px"
        selcue="1">
       <group
-         display_unit="9"
-         id="lineheight" />
+         id="lineheight"
+         display_unit="9" />
     </eventcontext>
     <eventcontext
        id="nodes"
@@ -428,14 +428,14 @@
        offset="0"
        offsetunits="pt" />
     <group
-       measure-end="6.39915,7.59449"
-       measure-start="3.96755,7.59449"
-       offset="5"
-       scale="100"
-       precision="2"
-       unit="px"
+       id="measure"
        fontsize="10"
-       id="measure" />
+       unit="px"
+       precision="2"
+       scale="100"
+       offset="5"
+       measure-start="3.96755,7.59449"
+       measure-end="6.39915,7.59449" />
   </group>
   <group
      id="palette">
@@ -650,10 +650,10 @@
        panel_mode="1"
        panel_wrap="0"
        panel_border="0"
-       x="1596"
-       y="622"
-       w="200"
-       h="200"
+       x="1386"
+       y="435"
+       w="652"
+       h="627"
        visible="0"
        placement="1" />
     <group
@@ -734,9 +734,10 @@
        path="/home/jacob/Desktop/"
        ask="1"
        ask_svg="1"
-       link="link"
+       link="embed"
        scale="auto"
-       import_mode_svg="include" />
+       import_mode_svg="include"
+       forcexdpi="0" />
     <group
        id="debug"
        redirect="0" />
@@ -798,8 +799,13 @@
     <group
        id="layers"
        maxDepth="20"
-       w="200"
-       h="300" />
+       w="337"
+       h="442"
+       x="0"
+       y="0"
+       visible="1"
+       state="2"
+       placement="5" />
     <group
        id="extensioneditor" />
     <group
@@ -823,19 +829,19 @@
     <group
        id="filtereffects" />
     <group
-       animate-time="100"
-       on-blur="0.50"
+       id="transparency"
        on-focus="1.0"
-       id="transparency" />
+       on-blur="0.50"
+       animate-time="100" />
     <group
-       id="objects"
-       x="0"
-       y="0"
-       w="337"
-       h="442"
-       visible="1"
+       placement="5"
        state="2"
-       placement="5" />
+       visible="1"
+       h="442"
+       w="337"
+       y="0"
+       x="0"
+       id="objects" />
   </group>
   <group
      id="printing">
@@ -928,8 +934,8 @@
        id="wheelscroll"
        value="40" />
     <group
-       id="spacepans"
-       value="0" />
+       value="0"
+       id="spacepans" />
     <group
        id="wheelzooms"
        value="0" />
@@ -978,8 +984,8 @@
        id="dialogsskiptaskbar"
        value="1" />
     <group
-       value="2"
-       id="defaultwindowsize" />
+       id="defaultwindowsize"
+       value="2" />
     <group
        id="arenatilescachesize"
        value="8192" />
@@ -1037,14 +1043,14 @@
        id="outlinemode"
        value="0" />
     <group
-       str="openclipart.org"
-       id="ocalurl" />
+       id="ocalurl"
+       str="openclipart.org" />
     <group
-       str=""
-       id="ocalusername" />
+       id="ocalusername"
+       str="" />
     <group
-       str=""
-       id="ocalpassword" />
+       id="ocalpassword"
+       str="" />
     <group
        id="wireframecolors"
        onlight="255"
@@ -1132,9 +1138,9 @@
        id="dash"
        scale="1" />
     <group
-       value="board"
+       shortcutfile="/home/jacob/.config/inkscape/keys/inkscape_test.xml"
        id="kbshortcuts"
-       shortcutfile="/home/jacob/.config/inkscape/keys/inkscape_test.xml" />
+       value="board" />
   </group>
   <group
      id="extensions"
@@ -1156,8 +1162,8 @@
     <group
        width="1280"
        height="894"
-       x="1053"
-       y="197"
+       x="1280"
+       y="328"
        fullscreen="0"
        id="geometry"
        maximized="0" />
@@ -1258,12 +1264,12 @@
      id="ui"
      language="" />
   <group
-     id="theme"
-     defaultTheme="Ambiance"
-     defaultIconTheme="ubuntu-mono-dark"
-     gtkTheme="Ambiance"
-     iconTheme="ubuntu-mono-dark"
-     menuIcons_canvas="0"
+     menuIcons_objects="0"
      menuIcons_layers="0"
-     menuIcons_objects="0" />
+     menuIcons_canvas="0"
+     iconTheme="ubuntu-mono-dark"
+     gtkTheme="Ambiance"
+     defaultIconTheme="ubuntu-mono-dark"
+     defaultTheme="Ambiance"
+     id="theme" />
 </inkscape>

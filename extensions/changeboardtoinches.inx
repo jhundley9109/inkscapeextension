@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<inkscape-extension xmlns="http://www.inkscape.org/namespace/inkscape/extension">
+      <name>Set document to inches</name>
+      <id>org.inkscape.changeboardunitstoinches</id>
+      <param name="toggle_unit_to_inches" type="bool" gui-hidden="true">true</param>
+      <effect needs-live-preview="false">
+        <object-type>all</object-type>
+        <effects-menu>
+          <submenu name="Document"/>
+        </effects-menu>
+      </effect>
+      <script>
+        <command location="inx" interpreter="python">changeboardsize.py</command>
+      </script>
+</inkscape-extension>

@@ -17,4 +17,8 @@
      key="F6"
      action="org.inkscape.exlargeboardsize"
      display="true" />
+  <bind
+     key="F2"
+     action="org.inkscape.changeboardunitstoinches"
+     display="true" />
 </keys>

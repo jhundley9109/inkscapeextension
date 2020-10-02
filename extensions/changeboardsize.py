@@ -209,15 +209,15 @@ class ArtboardAdjuster(inkex.EffectExtension):
 
             if tag in GRAPHICS_ELEMENTS or tag in CONTAINER_ELEMENTS:
                 # sys.stderr.write(str(element.get('transform')) + " " + str(translateCalc))
-                existtingTransform = element.get('transform')
+                # existtingTransform = element.get('transform')
 
                 # This is a bit of a workaround because I don't know how to do a translate operation on an element that already.
                 # So what I do is I take any element that already has transform matrix, remove it from the svg, push it onto a group, and add all those elements back onto the svg
-                if existtingTransform != None and re.search("matrix", existtingTransform):
-                    sys.stderr.write(str(existtingTransform))
+                # if existtingTransform != None and re.search("matrix", existtingTransform):
+                    # sys.stderr.write(str(existtingTransform))
 
-                    elementsToGroup.append(element)
-                    svg.remove(element)
+                elementsToGroup.append(element)
+                svg.remove(element)
 
         if len(elementsToGroup) > 0:
             group = Group()

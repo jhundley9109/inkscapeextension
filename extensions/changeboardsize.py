@@ -202,11 +202,7 @@ class ArtboardAdjuster(inkex.EffectExtension):
 
         # sys.stderr.write("Did we ever make it in here?\nDocument DPI is: " + str(documentDPI) + " " + str(widthInInches) + " " + str(origWidth) + " " + str(targetWidthInches) + " " + str(originalWidthInPx) + " New width in px: " + str(newWidthInPx) + " " + str(translateCalc));
 
-        # group = self.svg.get_current_layer().add(Group())
-
-        group = Group()
-
-        numElementsNotGrouped = 0
+        elementsToGroup = []
 
         for element in svg:
             tag = element.TAG
@@ -215,20 +211,19 @@ class ArtboardAdjuster(inkex.EffectExtension):
                 # sys.stderr.write(str(element.get('transform')) + " " + str(translateCalc))
                 existtingTransform = element.get('transform')
 
-                # This is a bit of a workaround because I don't know how to do a translate operation on an element that already 
+                # This is a bit of a workaround because I don't know how to do a translate operation on an element that already.
+                # So what I do is I take any element that already has transform matrix, remove it from the svg, push it onto a group, and add all those elements back onto the svg
                 if existtingTransform != None and re.search("matrix", existtingTransform):
                     sys.stderr.write(str(existtingTransform))
 
-                    numElementsNotGrouped += 1
+                    elementsToGroup.append(element)
+                    svg.remove(element)
 
-        if numElementsNotGrouped > 0:
+        if len(elementsToGroup) > 0:
             group = Group()
 
-            for element in svg:
-                tag = element.TAG
-
-                if tag in GRAPHICS_ELEMENTS or tag in CONTAINER_ELEMENTS:
-                    group.append(element)
+            for element in elementsToGroup:
+                group.append(element)
 
             self.svg.append(group)
 
@@ -237,12 +232,8 @@ class ArtboardAdjuster(inkex.EffectExtension):
             tag = element.TAG
 
             if tag in GRAPHICS_ELEMENTS or tag in CONTAINER_ELEMENTS:
-                # sys.stderr.write(str(element.get('transform')) + " " + str(translateCalc))
-                # existtingTransform = element.get('transform')
 
                 element.transform.add_translate(translateCalc)
-                # group.append(element)
-                # numElementsNotGrouped++
 
 
 if __name__ == '__main__':

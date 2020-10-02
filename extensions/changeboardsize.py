@@ -37,6 +37,9 @@ from lxml import etree
 # from units import discover_unit, convert_unit, render_unit, parse_unit
 from inkex.units import discover_unit, convert_unit, render_unit, parse_unit
 
+import inkex
+from inkex import Group
+
 GRAPHICS_ELEMENTS = [
     'circle',
     'ellipse',
@@ -56,7 +59,7 @@ CONTAINER_ELEMENTS = [
     'switch',
 ]
 
-class DPISwitcher(inkex.EffectExtension):
+class ArtboardAdjuster(inkex.EffectExtension):
 
     def add_arguments(self, pars):
         # sys.stderr.write("Did we ever make it in here?\n")
@@ -197,7 +200,39 @@ class DPISwitcher(inkex.EffectExtension):
         diff = newWidthInPx - originalWidthInPx
         translateCalc = diff / 2
 
-        # sys.stderr.write("Did we ever make it in here?\nDocument DPI is: " + str(documentDPI) + " " + svg.get('width') + " " + str(widthInInches) + " " + str(origWidth) + " " + str(targetWidthInches) + " " + str(originalWidthInPx) + " New width in px: " + str(newWidthInPx) + " " + str(translateCalc) + " " +  str(svg.unittouu(str(1) + "in")));
+        # sys.stderr.write("Did we ever make it in here?\nDocument DPI is: " + str(documentDPI) + " " + str(widthInInches) + " " + str(origWidth) + " " + str(targetWidthInches) + " " + str(originalWidthInPx) + " New width in px: " + str(newWidthInPx) + " " + str(translateCalc));
+
+        # group = self.svg.get_current_layer().add(Group())
+
+        group = Group()
+
+        numElementsNotGrouped = 0
+
+        for element in svg:
+            tag = element.TAG
+
+            if tag in GRAPHICS_ELEMENTS or tag in CONTAINER_ELEMENTS:
+                # sys.stderr.write(str(element.get('transform')) + " " + str(translateCalc))
+                existtingTransform = element.get('transform')
+
+                # This is a bit of a workaround because I don't know how to do a translate operation on an element that already 
+                if existtingTransform != None and re.search("matrix", existtingTransform):
+                    sys.stderr.write(str(existtingTransform))
+
+                    numElementsNotGrouped += 1
+
+        if numElementsNotGrouped > 0:
+            group = Group()
+
+            for element in svg:
+                tag = element.TAG
+
+                if tag in GRAPHICS_ELEMENTS or tag in CONTAINER_ELEMENTS:
+                    group.append(element)
+
+            self.svg.append(group)
+
+
         for element in svg:
             tag = element.TAG
 
@@ -205,10 +240,13 @@ class DPISwitcher(inkex.EffectExtension):
                 # sys.stderr.write(str(element.get('transform')) + " " + str(translateCalc))
                 # existtingTransform = element.get('transform')
 
-                element.transform.add_translate(translateCalc, 0)
+                element.transform.add_translate(translateCalc)
+                # group.append(element)
+                # numElementsNotGrouped++
+
 
 if __name__ == '__main__':
-    DPISwitcher().run()
+    ArtboardAdjuster().run()
 
 
 

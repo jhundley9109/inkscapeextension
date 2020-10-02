@@ -132,11 +132,14 @@ class DPISwitcher(inkex.EffectExtension):
         heightInfo = self.parse_length(svg.get('height'))
         origHeight = heightInfo[0]
 
-        widthInPx = convert_unit(svg.get('width'), 'px')
-        heightInPx = convert_unit(svg.get('height'), 'px')
+        # unittouu == desired units to document units. This calculates in the DPI for the document
+        # uutounit == user units to desired units with regards to DPI. Inkscape and pretty much everything else uses 96 DPI but illustrator does everything in 72 DPI because adobe is dumb.
+        originalWidthInPx = svg.unittouu(svg.get('width'))
 
-        widthInInches = convert_unit(svg.get('width'), 'in')
-        heightInInches = convert_unit(svg.get('height'), 'in')
+        widthInInches = svg.uutounit(svg.get('width'), 'in')
+        heightInInches = svg.uutounit(svg.get('height'), 'in')
+
+        documentDPI = svg.unittouu("1in")
 
         if self.options.toggle_unit_to_inches or self.options.size_select == '':
             targetWidthInches = widthInInches
@@ -150,7 +153,7 @@ class DPISwitcher(inkex.EffectExtension):
                 targetHeightInches = 16
             elif self.options.size_select == "infant":
                 targetWidthInches = 7
-                targetHeightInches = 9
+                targetHeightInches = 8
             elif self.options.size_select == "exlarge":
                 targetWidthInches = 16
                 targetHeightInches = 18
@@ -189,13 +192,12 @@ class DPISwitcher(inkex.EffectExtension):
         self.set_guide_at_position(targetHeightInches / 2, True)
         self.set_guide_at_position(targetWidthInches / 2, False)
 
-        newWidthInPx = convert_unit(str(targetWidthInches) + 'in', 'px')
+        newWidthInPx = svg.unittouu(str(targetWidthInches) + "in")
 
-        diff = newWidthInPx - widthInPx
+        diff = newWidthInPx - originalWidthInPx
         translateCalc = diff / 2
 
-        # sys.stderr.write("Did we ever make it in here?\n" + str(origWidth) + " " + str(svg.uutounit(origHeight, 'px')) + " " + str(newWidthInPx) + " diff is : " + str(diff) + " " + str(translateCalc) + "\n " + str(targetWidthInches) + " " + str(newWidthInPx))
-
+        # sys.stderr.write("Did we ever make it in here?\nDocument DPI is: " + str(documentDPI) + " " + svg.get('width') + " " + str(widthInInches) + " " + str(origWidth) + " " + str(targetWidthInches) + " " + str(originalWidthInPx) + " New width in px: " + str(newWidthInPx) + " " + str(translateCalc) + " " +  str(svg.unittouu(str(1) + "in")));
         for element in svg:
             tag = element.TAG
 
